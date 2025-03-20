@@ -1,0 +1,6 @@
+* ZADANIE - WYPOZYCZALNIA AUT *
+- Zrobić : 
+     * Wyszukiwarkę na górze strony
+     * Filtrację
+     * zamiast statycznych miast , zrobić to w filtracji 
+     * Przeliczaj automatycznie cenę według ilości dni

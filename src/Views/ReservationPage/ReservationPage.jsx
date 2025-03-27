@@ -15,10 +15,8 @@ export default function ReservationPage({ cars }) {
     const value = parseInt(e.target.value);
     if (value < 1) {
       setError("Liczba dni musi być większa niż 0");
-      setDays(1);
-      setTotalPrice(car.pricePerDay);
     } else {
-      setError("");
+      setError(""); // Clear error message when input is valid
       setDays(value);
       setTotalPrice(car.pricePerDay * value);
     }
@@ -42,7 +40,7 @@ export default function ReservationPage({ cars }) {
         date: new Date().toLocaleDateString()
       };
 
-      // Wysłanie rezerwacji do serwera
+      // Send reservation data to backend
       fetch('http://localhost:5000/update-reservation', {
         method: 'POST',
         headers: {
@@ -55,11 +53,16 @@ export default function ReservationPage({ cars }) {
       })
       .then(response => response.json())
       .then(data => {
-        alert('Rezerwacja została zapisana!');
-        navigate("/thank-you");
+        if (data.message) {
+          alert('Rezerwacja została zapisana!');
+          navigate("/thank-you");
+        } else {
+          alert('Wystąpił błąd podczas zapisywania rezerwacji');
+        }
       })
       .catch(error => {
         alert('Wystąpił błąd podczas zapisywania rezerwacji');
+        console.error('Error:', error);
       });
     } else {
       navigate("/login");

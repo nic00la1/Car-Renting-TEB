@@ -6,6 +6,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("loggedUser");
@@ -16,28 +17,42 @@ export default function Navbar() {
     <nav className="navbar">
       <div className="navbar-left">
         <Link to="/" className="logo">AutoRent</Link>
-        <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
-          ☰
-        </button>
       </div>
 
-      <div className={`nav-links ${menuOpen ? "open" : ""}`}>
-        <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
-        {loggedUser && (
-          <>
-            <Link to="/my-reservations" onClick={() => setMenuOpen(false)}>Moje rezerwacje</Link>
-            <span className="user-info">
-              👤 {loggedUser.username}
-            </span>
-            <button className="logout-btn" onClick={handleLogout}>Wyloguj się</button>
-          </>
+      <div className="navbar-right">
+        {loggedUser ? (
+          <div
+            className="user-dropdown"
+            onMouseEnter={() => setDropdownOpen(true)}
+            onMouseLeave={() => setDropdownOpen(false)}
+          >
+            <span className="username">Witaj, {loggedUser.username} ▼</span>
+            {dropdownOpen && (
+              <div className="dropdown-menu">
+                <Link to="/my-reservations">Moje rezerwacje</Link>
+                <Link to="/my-account">Moje konto</Link>
+                <button onClick={handleLogout}>Wyloguj się</button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="nav-links">
+            <Link to="/login">Logowanie</Link>
+            <Link to="/register">Rejestracja</Link>
+          </div>
         )}
-        {!loggedUser && (
-          <>
-            <Link to="/login" onClick={() => setMenuOpen(false)}>Logowanie</Link>
-            <Link to="/register" onClick={() => setMenuOpen(false)}>Rejestracja</Link>
-          </>
-        )}
+      </div>
+
+      <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
+        <div className="bar" />
+        <div className="bar" />
+        <div className="bar" />
+      </div>
+
+      <div className={`nav-links mobile ${menuOpen ? "open" : ""}`}>
+        <Link to="/">Home</Link>
+        {!loggedUser && <Link to="/login">Logowanie</Link>}
+        {!loggedUser && <Link to="/register">Rejestracja</Link>}
       </div>
     </nav>
   );

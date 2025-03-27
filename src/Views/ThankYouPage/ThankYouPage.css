@@ -1,0 +1,15 @@
+.thank-you-container {
+    text-align: center;
+    margin-top: 50px;
+  }
+  
+  .back-home-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+  

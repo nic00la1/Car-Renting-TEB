@@ -1,5 +1,7 @@
 import React from "react";
-import CarRental from "./CarRental";
+import CarRental from "./Views/CarRental/CarRental";
+
+
 
 function App() {
   return (

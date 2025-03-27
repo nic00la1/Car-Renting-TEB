@@ -37,8 +37,6 @@ export default function Navbar() {
           </div>
         ) : (
           <div className="nav-links">
-            <Link to="/login">Logowanie</Link>
-            <Link to="/register">Rejestracja</Link>
           </div>
         )}
       </div>
@@ -52,7 +50,6 @@ export default function Navbar() {
       <div className={`nav-links mobile ${menuOpen ? "open" : ""}`}>
         <Link to="/">Home</Link>
         {!loggedUser && <Link to="/login">Logowanie</Link>}
-        {!loggedUser && <Link to="/register">Rejestracja</Link>}
       </div>
     </nav>
   );

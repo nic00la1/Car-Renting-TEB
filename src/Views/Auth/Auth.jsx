@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./Auth.css";
 
 export default function Auth({ isLogin }) {
@@ -54,6 +54,15 @@ export default function Auth({ isLogin }) {
       <button className="auth-btn" onClick={handleAuth}>
         {isLogin ? "Zaloguj się" : "Zarejestruj się"}
       </button>
+      {isLogin ? (
+        <p>
+          Nie masz konta? <Link to="/register">Zarejestruj się</Link>
+        </p>
+      ) : (
+        <p>
+          Masz już konto? <Link to="/login">Zaloguj się</Link>
+        </p>
+      )}
     </div>
   );
 }

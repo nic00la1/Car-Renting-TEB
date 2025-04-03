@@ -64,6 +64,20 @@ app.post("/update-reservation", (req, res) => {
   }
 });
 
+// Route to get user reservations
+app.post("/get-reservations", (req, res) => {
+  const { username } = req.body;
+  const users = readUsers();
+  const user = users.find(u => u.username === username);
+
+  if (user) {
+    res.status(200).json({ reservations: user.reservations });
+  } else {
+    res.status(404).json({ error: "Użytkownik nie znaleziony!" });
+  }
+});
+
+
 app.listen(PORT, () => {
   console.log(`Serwer działa na http://localhost:${PORT}`);
 });

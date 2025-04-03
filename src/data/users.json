@@ -8,6 +8,24 @@
   {
     "username": "nic00la1",
     "password": "nicola",
-    "reservations": []
+    "reservations": [
+      {
+        "carId": 2,
+        "carName": "BMW 5 Series",
+        "image": "/static/media/bmw5.629bac449cffaacc6e35.jpg",
+        "location": "Warszawa",
+        "days": 7,
+        "totalPrice": 2450,
+        "date": "3.04.2025"
+      },
+      {
+        "carName": "Tesla Model 3",
+        "location": "Łódź",
+        "days": 3,
+        "totalPrice": 750,
+        "date": "3.04.2025",
+        "image": "/static/media/tesla3.345d49c5c52395f9cd13.webp"
+      }
+    ]
   }
 ]

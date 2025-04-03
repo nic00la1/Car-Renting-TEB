@@ -1,4 +1,7 @@
+// MyReservationsPage.js
 import React, { useEffect, useState } from "react";
+import InvoiceGenerator from "../InvoiceGenerator/InvoiceGenerator";
+
 import "./MyReservationsPage.css";
 
 export default function MyReservationsPage() {
@@ -44,6 +47,8 @@ export default function MyReservationsPage() {
               <p><strong>Dni:</strong> {res.days}</p>
               <p><strong>Łączna cena:</strong> {res.totalPrice} zł</p>
               <p><strong>Data rezerwacji:</strong> {res.date}</p>
+              {/* Dodajemy komponent generujący fakturę */}
+              <InvoiceGenerator reservation={res} />
             </div>
           </div>
         ))}

@@ -8,6 +8,7 @@ import ThankYouPage from "./Views/ThankYouPage/ThankYouPage";
 import MyReservationsPage from "./Views/MyReservationsPage/MyReservationsPage";
 import Navbar from "./components/Navbar/Navbar"; // 👈 dodaj to
 import cars from "./data/carsData";
+import MyAccount from "./Views/MyAccount/MyAccount";
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/thank-you" element={<ThankYouPage />} />
         <Route path="/my-reservations" element={<MyReservationsPage />} />
+        <Route path="/my-account" element={<MyAccount />} />
       </Routes>
     </Router>
   );

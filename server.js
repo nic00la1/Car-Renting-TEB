@@ -77,6 +77,52 @@ app.post("/get-reservations", (req, res) => {
   }
 });
 
+// Dodaj endpoint do pobierania danych użytkownika
+app.get("/user/:username", (req, res) => {
+  const { username } = req.params;
+  const users = readUsers();
+
+  console.log("Szukam użytkownika:", username); // Logowanie
+
+  const user = users.find(u => u.username === username);
+
+  if (!user) {
+    return res.status(404).json({ message: "Użytkownik nie znaleziony" });
+  }
+
+  res.json(user);
+});
+
+// Aktualizacja hasła użytkownika
+app.post("/update-password", (req, res) => {
+  const { username, password } = req.body;
+  const users = readUsers();
+  const user = users.find(u => u.username === username);
+
+  if (!user) {
+    return res.status(404).json({ error: "Użytkownik nie znaleziony!" });
+  }
+
+  user.password = password;
+  writeUsers(users);
+  res.status(200).json({ message: "Hasło zostało zmienione!" });
+});
+
+// Aktualizacja avatara użytkownika
+app.post("/update-avatar", (req, res) => {
+  const { username, avatar } = req.body;
+  const users = readUsers();
+  const user = users.find(u => u.username === username);
+
+  if (!user) {
+    return res.status(404).json({ error: "Użytkownik nie znaleziony!" });
+  }
+
+  user.avatar = avatar;  // Zakładając, że avatar jest zapisany jako URL lub Base64
+  writeUsers(users);
+  res.status(200).json({ message: "Avatar został zaktualizowany!" });
+});
+
 
 app.listen(PORT, () => {
   console.log(`Serwer działa na http://localhost:${PORT}`);

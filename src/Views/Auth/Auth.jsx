@@ -7,32 +7,33 @@ export default function Auth({ isLogin }) {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleAuth = () => {
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-
-    if (isLogin) {
-      const user = users.find(
-        u => u.username === username && u.password === password
-      );
-      if (user) {
-        localStorage.setItem("loggedUser", JSON.stringify(user));
+  const handleAuth = async () => {
+    const endpoint = isLogin ? "http://localhost:5000/login" : "http://localhost:5000/register";
+    
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+      
+      const data = await response.json();
+      if (!response.ok) {
+        alert(data.message);
+        return;
+      }
+      
+      if (isLogin) {
+        localStorage.setItem("loggedUser", JSON.stringify(data.user));
         alert("Zalogowano!");
         navigate("/");
       } else {
-        alert("Nieprawidłowe dane logowania!");
+        alert("Zarejestrowano!");
+        navigate("/login");
       }
-    } else {
-      const userExists = users.find(u => u.username === username);
-      if (userExists) {
-        alert("Użytkownik już istnieje!");
-        return;
-      }
-
-      const newUser = { username, password, reservations: [] };
-      users.push(newUser);
-      localStorage.setItem("users", JSON.stringify(users));
-      alert("Zarejestrowano!");
-      navigate("/login");
+    } catch (error) {
+      console.error("Błąd podczas uwierzytelniania:", error);
+      alert("Wystąpił błąd. Spróbuj ponownie później.");
     }
   };
 

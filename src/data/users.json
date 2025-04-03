@@ -1,9 +1,13 @@
 [
-    {
-      "id": 1,
-      "username": "nicola",
-      "password": "admin",
-      "reservations": []
-    }
-  ]
-  
+  {
+    "id": 1,
+    "username": "nicola",
+    "password": "admin",
+    "reservations": []
+  },
+  {
+    "username": "nic00la1",
+    "password": "nicola",
+    "reservations": []
+  }
+]

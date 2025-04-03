@@ -123,3 +123,35 @@
     display: flex;
   }
 }
+/* Avatar */
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 8px;
+  object-fit: cover; /* Aby avatar nie był rozciągnięty */
+}
+
+.avatar-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.8rem;
+}
+
+/* Wersja na responsywnym menu */
+@media (max-width: 768px) {
+  .user-info {
+    gap: 0.5rem;
+  }
+}

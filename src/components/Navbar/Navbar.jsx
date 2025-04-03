@@ -20,13 +20,23 @@ export default function Navbar() {
       </div>
 
       <div className="navbar-right">
-        {loggedUser ? (
+        {loggedUser && (
           <div
             className="user-dropdown"
             onMouseEnter={() => setDropdownOpen(true)}
             onMouseLeave={() => setDropdownOpen(false)}
           >
             <span className="username">Witaj, {loggedUser.username} ▼</span>
+
+            {/* Tylko jeśli użytkownik ma avatar, wyświetlamy go */}
+            {loggedUser.avatar && (
+              <img
+                src={loggedUser.avatar}
+                alt="Avatar"
+                className="user-avatar"
+              />
+            )}
+
             {dropdownOpen && (
               <div className="dropdown-menu">
                 <Link to="/my-reservations">Moje rezerwacje</Link>
@@ -34,9 +44,6 @@ export default function Navbar() {
                 <button onClick={handleLogout}>Wyloguj się</button>
               </div>
             )}
-          </div>
-        ) : (
-          <div className="nav-links">
           </div>
         )}
       </div>

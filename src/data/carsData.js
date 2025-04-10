@@ -49,17 +49,6 @@ const cars = [
       "coupe"
     ],
     "isRecommended": true
-  },
-  {
-    "id": 5,
-    "name": "Renault Twingo",
-    "location": "Łódź",
-    "pricePerDay": "30",
-    "tags": [
-      "bieda"
-    ],
-    "image": "/photos/1744284423373.jpg",
-    "isRecommended": false
   }
 ];
 

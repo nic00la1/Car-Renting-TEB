@@ -66,14 +66,16 @@ function AdminPage() {
   // Handle deleting a car
   const handleDeleteCar = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:5000/delete-car/${id}`);
+      const response = await axios.delete(`http://localhost:5000/delete-car/${id}`, {
+        params: { username: "admin" }, // Przesyłanie username jako parametru zapytania
+      });
       setMessage(response.data.message);
-
-      // Refresh car list
+  
+      // Odśwież listę samochodów
       const updatedCars = await axios.get("http://localhost:5000/cars");
       setCars(updatedCars.data);
     } catch (error) {
-      setMessage("Wystąpił błąd podczas usuwania samochodu.");
+      setMessage(error.response?.data?.message || "Wystąpił błąd podczas usuwania samochodu.");
     }
   };
 

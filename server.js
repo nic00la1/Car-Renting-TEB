@@ -33,7 +33,7 @@ const writeCarsToFile = () => {
 
 // Middleware do sprawdzania, czy użytkownik jest adminem
 const checkAdmin = (req, res, next) => {
-  const { username } = req.body;
+  const username = req.body.username || req.query.username || req.headers["username"];
   console.log("Sprawdzam użytkownika:", username); // Logowanie
   const users = readUsers();
   const user = users.find(u => u.username === username);

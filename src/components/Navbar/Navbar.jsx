@@ -46,8 +46,6 @@ export default function Navbar() {
                    {loggedUser.role === "admin" && (
                   <>
                     <Link to="/admin">Panel Admina</Link>
-                    <Link to="/admin/add-car">Dodaj Samochód</Link>
-                    <Link to="/admin/manage-cars">Zarządzaj Samochodami</Link>
                   </>
                 )}
                 <button onClick={handleLogout}>Wyloguj się</button>

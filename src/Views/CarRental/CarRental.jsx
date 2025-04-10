@@ -3,7 +3,7 @@ import { Car, MapPin, Calendar, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import cars from "../../data/carsData";
 import TestimonialsSlider from "../TestimonialsSlider/TestimonialsSlider";
-import Slider from "react-slick"; // importujemy Slider
+import Slider from "react-slick"; // Importujemy Slider
 import "./CarRental.css";
 
 function CarRental() {
@@ -11,9 +11,6 @@ function CarRental() {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
-  const [modalOpen, setModalOpen] = useState(false); // Stan do otwierania/zamknięcia modala
-  const [selectedCar, setSelectedCar] = useState(null); // Auto wybrane z listy
-  const [cart, setCart] = useState([]); // Koszyk, przechowujący dodane samochody
 
   const allTags = Array.from(new Set(cars.flatMap(car => car.tags || [])));
   const locations = Array.from(new Set(cars.map(car => car.location)));
@@ -37,34 +34,6 @@ function CarRental() {
     return 0;
   });
 
-  const openModal = (car) => {
-    setSelectedCar(car);
-    setModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
-    setSelectedCar(null);
-  };
-
-  const addToCart = (car) => {
-    setCart([...cart, car]); // Dodajemy auto do koszyka
-    closeModal(); // Zamykamy modal po dodaniu
-  };
-
-  const viewCart = () => {
-    alert(`W koszyku znajduje się ${cart.length} samochodów.`); // Pokazujemy liczbę samochodów w koszyku
-  };
-
-  // Konfiguracja slidera
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: true,
-  };
 
   return (
     <div className="container">
@@ -121,7 +90,7 @@ function CarRental() {
           <p className="no-results">Brak wyników. Spróbuj zmienić filtry.</p>
         ) : (
           sortedCars.map((car) => (
-            <Link to={`/reservation/${car.id}`} key={car.id} className="car-card" onClick={() => openModal(car)}>
+            <Link to={`/reservation/${car.id}`} key={car.id} className="car-card" >
               <img src={car.image} alt={car.name} className="car-image" />
               <h2 className="car-title"><Car className="icon" /> {car.name}</h2>
               <p className="car-info"><MapPin className="icon" /> {car.location}</p>
@@ -137,25 +106,6 @@ function CarRental() {
           ))
         )}
       </div>
-
-      {/* Modal z wybranym autem */}
-      {modalOpen && selectedCar && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button className="close-btn" onClick={closeModal}>X</button>
-            <h2>{selectedCar.name}</h2>
-            <img src={selectedCar.image} alt={selectedCar.name} className="car-image" />
-            <p>{selectedCar.pricePerDay} zł/dzień</p>
-            <div className="tags">
-              {(selectedCar.tags || []).map(tag => (
-                <span key={tag} className="tag">{tag}</span>
-              ))}
-            </div>
-            <button onClick={() => addToCart(selectedCar)} className="add-to-cart-btn">Dodaj do koszyka</button>
-          </div>
-        </div>
-      )}
-
       {/* 💬 Opinie */}
       <TestimonialsSlider />
     </div>

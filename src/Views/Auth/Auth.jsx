@@ -6,23 +6,27 @@ export default function Auth({ isLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false); // For handling loading state
+  const [error, setError] = useState(""); // To store error messages
 
   const handleAuth = async () => {
+    setLoading(true); // Set loading state to true when the request starts
     const endpoint = isLogin ? "http://localhost:5000/login" : "http://localhost:5000/register";
-    
+
     try {
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
       });
-      
+
       const data = await response.json();
+
       if (!response.ok) {
-        alert(data.message);
+        setError(data.message || "Wystąpił błąd. Spróbuj ponownie.");
         return;
       }
-      
+
       if (isLogin) {
         localStorage.setItem("loggedUser", JSON.stringify(data.user));
         alert("Zalogowano!");
@@ -33,7 +37,9 @@ export default function Auth({ isLogin }) {
       }
     } catch (error) {
       console.error("Błąd podczas uwierzytelniania:", error);
-      alert("Wystąpił błąd. Spróbuj ponownie później.");
+      setError("Wystąpił błąd. Spróbuj ponownie później.");
+    } finally {
+      setLoading(false); // Set loading to false when the request finishes
     }
   };
 
@@ -52,9 +58,14 @@ export default function Auth({ isLogin }) {
         value={password}
         onChange={e => setPassword(e.target.value)}
       />
-      <button className="auth-btn" onClick={handleAuth}>
-        {isLogin ? "Zaloguj się" : "Zarejestruj się"}
+      <button
+        className="auth-btn"
+        onClick={handleAuth}
+        disabled={loading} // Disable button while loading
+      >
+        {loading ? "Proszę czekać..." : isLogin ? "Zaloguj się" : "Zarejestruj się"}
       </button>
+      {error && <p className="error-message">{error}</p>}
       {isLogin ? (
         <p>
           Nie masz konta? <Link to="/register">Zarejestruj się</Link>

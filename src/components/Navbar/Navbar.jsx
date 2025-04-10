@@ -41,6 +41,15 @@ export default function Navbar() {
               <div className="dropdown-menu">
                 <Link to="/my-reservations">Moje rezerwacje</Link>
                 <Link to="/my-account">Moje konto</Link>
+
+                   {/* Tylko dla admina */}
+                   {loggedUser.role === "admin" && (
+                  <>
+                    <Link to="/admin">Panel Admina</Link>
+                    <Link to="/admin/add-car">Dodaj Samochód</Link>
+                    <Link to="/admin/manage-cars">Zarządzaj Samochodami</Link>
+                  </>
+                )}
                 <button onClick={handleLogout}>Wyloguj się</button>
               </div>
             )}
@@ -57,6 +66,7 @@ export default function Navbar() {
       <div className={`nav-links mobile ${menuOpen ? "open" : ""}`}>
         <Link to="/">Home</Link>
         {!loggedUser && <Link to="/login">Logowanie</Link>}
+    
       </div>
     </nav>
   );

@@ -34,16 +34,18 @@ const writeCarsToFile = () => {
 // Middleware do sprawdzania, czy użytkownik jest adminem
 const checkAdmin = (req, res, next) => {
   const { username } = req.body;
+  console.log("Sprawdzam użytkownika:", username); // Logowanie
   const users = readUsers();
   const user = users.find(u => u.username === username);
 
   if (!user || user.role !== "admin") {
+    console.log("Brak uprawnień administratora:", username); // Logowanie
     return res.status(403).json({ message: "Brak uprawnień administratora!" });
   }
 
+  console.log("Użytkownik jest adminem:", username); // Logowanie
   next();
 };
-
 // Endpointy użytkowników
 app.post("/register", (req, res) => {
   const { username, password } = req.body;
@@ -205,6 +207,28 @@ app.put("/update-car/:id", checkAdmin, (req, res) => {
 
 app.get("/cars", (req, res) => {
   res.status(200).json(cars);
+});
+
+const multer = require("multer");
+
+// Konfiguracja multer
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "public", "photos")); // Folder, gdzie będą zapisywane zdjęcia
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Unikalna nazwa pliku
+  },
+});
+
+const upload = multer({ storage });
+
+// Endpoint do przesyłania zdjęcia
+app.post("/upload-image", upload.single("image"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "Nie przesłano pliku!" });
+  }
+  res.status(200).json({ imagePath: `/photos/${req.file.filename}` });
 });
 
 app.listen(PORT, () => {

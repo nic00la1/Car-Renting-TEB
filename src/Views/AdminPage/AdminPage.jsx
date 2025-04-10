@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 function AdminPage() {
+  const [cars, setCars] = useState([]);
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [pricePerDay, setPricePerDay] = useState("");
@@ -9,10 +10,27 @@ function AdminPage() {
   const [image, setImage] = useState("");
   const [isRecommended, setIsRecommended] = useState(false);
   const [message, setMessage] = useState("");
+  const [editCarId, setEditCarId] = useState(null);
 
-  const handleAddCar = async () => {
+  // Fetch cars from the server
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/cars");
+        setCars(response.data);
+      } catch (error) {
+        console.error("Błąd podczas pobierania samochodów:", error);
+      }
+    };
+
+    fetchCars();
+  }, []);
+
+  // Handle adding or updating a car
+  const handleSaveCar = async () => {
     try {
-      const newCar = {
+      const carData = {
+        username: "admin", // Dodaj nazwę użytkownika
         name,
         location,
         pricePerDay,
@@ -20,21 +38,88 @@ function AdminPage() {
         image,
         isRecommended,
       };
-
-      const response = await axios.post(
-        "http://localhost:5000/add-car",
-        newCar
-      );
-
-      setMessage(response.data.message);
+  
+      if (editCarId) {
+        // Update car
+        const response = await axios.put(
+          `http://localhost:5000/update-car/${editCarId}`,
+          carData
+        );
+        setMessage(response.data.message);
+      } else {
+        // Add new car
+        const response = await axios.post("http://localhost:5000/add-car", carData);
+        setMessage(response.data.message);
+      }
+  
+      // Refresh car list
+      const updatedCars = await axios.get("http://localhost:5000/cars");
+      setCars(updatedCars.data);
+  
+      // Reset form
+      resetForm();
     } catch (error) {
-      setMessage("Wystąpił błąd podczas dodawania samochodu.");
+      setMessage("Wystąpił błąd podczas zapisywania samochodu.");
+    }
+  };
+
+  // Handle deleting a car
+  const handleDeleteCar = async (id) => {
+    try {
+      const response = await axios.delete(`http://localhost:5000/delete-car/${id}`);
+      setMessage(response.data.message);
+
+      // Refresh car list
+      const updatedCars = await axios.get("http://localhost:5000/cars");
+      setCars(updatedCars.data);
+    } catch (error) {
+      setMessage("Wystąpił błąd podczas usuwania samochodu.");
+    }
+  };
+
+  // Handle editing a car
+  const handleEditCar = (car) => {
+    setEditCarId(car.id);
+    setName(car.name);
+    setLocation(car.location);
+    setPricePerDay(car.pricePerDay);
+    setTags(car.tags.join(","));
+    setImage(car.image);
+    setIsRecommended(car.isRecommended);
+  };
+
+  // Reset form
+  const resetForm = () => {
+    setEditCarId(null);
+    setName("");
+    setLocation("");
+    setPricePerDay("");
+    setTags("");
+    setImage("");
+    setIsRecommended(false);
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append("image", file);
+  
+    try {
+      const response = await axios.post("http://localhost:5000/upload-image", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setImage(response.data.imagePath); // Ustaw ścieżkę do przesłanego zdjęcia
+      setMessage("Zdjęcie przesłane pomyślnie!");
+    } catch (error) {
+      setMessage("Wystąpił błąd podczas przesyłania zdjęcia.");
     }
   };
 
   return (
     <div>
-      <h2>Dodaj samochód</h2>
+      <h2>{editCarId ? "Edytuj samochód" : "Dodaj samochód"}</h2>
       <input
         type="text"
         placeholder="Nazwa"
@@ -59,12 +144,11 @@ function AdminPage() {
         value={tags}
         onChange={(e) => setTags(e.target.value)}
       />
-      <input
-        type="text"
-        placeholder="Link do zdjęcia"
-        value={image}
-        onChange={(e) => setImage(e.target.value)}
-      />
+     <input
+        type="file"
+        accept="image/*"
+        onChange={handleImageUpload}
+        />
       <label>
         Polecane:
         <input
@@ -73,8 +157,44 @@ function AdminPage() {
           onChange={() => setIsRecommended(!isRecommended)}
         />
       </label>
-      <button onClick={handleAddCar}>Dodaj samochód</button>
+      <button onClick={handleSaveCar}>
+        {editCarId ? "Zapisz zmiany" : "Dodaj samochód"}
+      </button>
+      <button onClick={resetForm}>Resetuj</button>
       {message && <p>{message}</p>}
+
+      <h2>Lista samochodów</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Nazwa</th>
+            <th>Lokalizacja</th>
+            <th>Cena za dzień</th>
+            <th>Tagi</th>
+            <th>Zdjęcie</th>
+            <th>Polecane</th>
+            <th>Akcje</th>
+          </tr>
+        </thead>
+        <tbody>
+          {cars.map((car) => (
+            <tr key={car.id}>
+              <td>{car.name}</td>
+              <td>{car.location}</td>
+              <td>{car.pricePerDay} zł</td>
+              <td>{car.tags.join(", ")}</td>
+              <td>
+                <img src={car.image} alt={car.name} style={{ width: "100px" }} />
+              </td>
+              <td>{car.isRecommended ? "Tak" : "Nie"}</td>
+              <td>
+                <button onClick={() => handleEditCar(car)}>Edytuj</button>
+                <button onClick={() => handleDeleteCar(car.id)}>Usuń</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

@@ -18,6 +18,7 @@ function AdminPage() {
   const [imagePreview, setImagePreview] = useState("");
   const [currentPage, setCurrentPage] = useState(1); // Dodano dla paginacji
   const carsPerPage = 5; // Liczba samochodów na stronę
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" }); // Dodano dla sortowania
 
   // Fetch cars from the server
   useEffect(() => {
@@ -36,69 +37,23 @@ function AdminPage() {
     fetchCars();
   }, []);
 
-  // Handle adding or updating a car
-  const handleSaveCar = async () => {
-    setLoading(true);
-    try {
-      const carData = {
-        username: "admin",
-        name,
-        location,
-        pricePerDay,
-        tags: tags.split(","),
-        image,
-        isRecommended,
-      };
-
-      if (editCarId) {
-        // Update car
-        const response = await axios.put(
-          `http://localhost:5000/update-car/${editCarId}`,
-          carData
-        );
-        setMessage(response.data.message);
-      } else {
-        // Add new car
-        const response = await axios.post("http://localhost:5000/add-car", carData);
-        setMessage(response.data.message);
-      }
-
-      // Refresh car list
-      const updatedCars = await axios.get("http://localhost:5000/cars");
-      setCars(updatedCars.data);
-
-      // Reset form
-      resetForm();
-      setShowModal(false);
-    } catch (error) {
-      setMessage("Wystąpił błąd podczas zapisywania samochodu.");
-    } finally {
-      setLoading(false);
+  // Handle sorting
+  const handleSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
     }
+    setSortConfig({ key, direction });
+
+    const sortedCars = [...cars].sort((a, b) => {
+      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
+      return 0;
+    });
+    setCars(sortedCars);
   };
 
-  // Handle deleting a car
-  const handleDeleteCar = async (id) => {
-    if (!window.confirm("Czy na pewno chcesz usunąć ten samochód?")) return;
-
-    setLoading(true);
-    try {
-      const response = await axios.delete(`http://localhost:5000/delete-car/${id}`, {
-        params: { username: "admin" },
-      });
-      setMessage(response.data.message);
-
-      // Refresh car list
-      const updatedCars = await axios.get("http://localhost:5000/cars");
-      setCars(updatedCars.data);
-    } catch (error) {
-      setMessage(error.response?.data?.message || "Wystąpił błąd podczas usuwania samochodu.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Handle editing a car
+  // Handle adding/editing a car
   const handleEditCar = (car) => {
     setEditCarId(car.id);
     setName(car.name);
@@ -111,25 +66,53 @@ function AdminPage() {
     setShowModal(true);
   };
 
-  // Reset form
-  const resetForm = () => {
-    setEditCarId(null);
-    setName("");
-    setLocation("");
-    setPricePerDay("");
-    setTags("");
-    setImage("");
-    setIsRecommended(false);
-    setImagePreview("");
+  const handleSaveCar = async () => {
+    setLoading(true);
+    try {
+      const carData = {
+        username: "admin",
+        name,
+        location,
+        pricePerDay,
+        tags: tags.split(","),
+        image,
+        isRecommended,
+      };
+  
+      if (editCarId) {
+        // Update car
+        const response = await axios.put(
+          `http://localhost:5000/update-car/${editCarId}`,
+          carData
+        );
+        setMessage(response.data.message);
+      } else {
+        // Add new car
+        const response = await axios.post("http://localhost:5000/add-car", carData);
+        setMessage(response.data.message);
+      }
+  
+      // Refresh car list
+      const updatedCars = await axios.get("http://localhost:5000/cars");
+      setCars(updatedCars.data);
+  
+      // Reset form
+      resetForm();
+      setShowModal(false);
+    } catch (error) {
+      setMessage("Wystąpił błąd podczas zapisywania samochodu.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
+  
     const formData = new FormData();
     formData.append("image", file);
-
+  
     try {
       const response = await axios.post("http://localhost:5000/upload-image", formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -140,6 +123,37 @@ function AdminPage() {
     } catch (error) {
       setMessage("Wystąpił błąd podczas przesyłania zdjęcia.");
     }
+  };
+
+  const handleDeleteCar = async (id) => {
+    if (!window.confirm("Czy na pewno chcesz usunąć ten samochód?")) return;
+  
+    setLoading(true);
+    try {
+      const response = await axios.delete(`http://localhost:5000/delete-car/${id}`, {
+        params: { username: "admin" },
+      });
+      setMessage(response.data.message);
+  
+      // Refresh car list
+      const updatedCars = await axios.get("http://localhost:5000/cars");
+      setCars(updatedCars.data);
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Wystąpił błąd podczas usuwania samochodu.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetForm = () => {
+    setEditCarId(null);
+    setName("");
+    setLocation("");
+    setPricePerDay("");
+    setTags("");
+    setImage("");
+    setIsRecommended(false);
+    setImagePreview("");
   };
 
   // Filter cars based on search input
@@ -173,6 +187,25 @@ function AdminPage() {
           className="search-bar"
         />
       </div>
+  
+      {/* Informacje o liczbie samochodów */}
+      <div className="car-info">
+        <p>
+          Łączna liczba samochodów: <strong>{cars.length}</strong>
+        </p>
+        <p>
+          Liczba wyników wyszukiwania: <strong>{filteredCars.length}</strong>
+        </p>
+        <p>
+          Wyświetlane samochody:{" "}
+          <strong>
+            {indexOfFirstCar + 1} -{" "}
+            {Math.min(indexOfLastCar, filteredCars.length)} z{" "}
+            {filteredCars.length}
+          </strong>
+        </p>
+      </div>
+  
       {loading ? (
         <p>Ładowanie...</p>
       ) : (
@@ -180,9 +213,15 @@ function AdminPage() {
           <table className="car-table">
             <thead>
               <tr>
-                <th>Nazwa</th>
-                <th>Lokalizacja</th>
-                <th>Cena za dzień</th>
+                <th onClick={() => handleSort("name")}>
+                  Nazwa {sortConfig.key === "name" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
+                </th>
+                <th onClick={() => handleSort("location")}>
+                  Lokalizacja {sortConfig.key === "location" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
+                </th>
+                <th onClick={() => handleSort("pricePerDay")}>
+                  Cena za dzień {sortConfig.key === "pricePerDay" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
+                </th>
                 <th>Tagi</th>
                 <th>Zdjęcie</th>
                 <th>Polecane</th>
@@ -208,7 +247,7 @@ function AdminPage() {
               ))}
             </tbody>
           </table>
-
+  
           {/* Paginacja */}
           <div className="pagination">
             <button
@@ -238,7 +277,7 @@ function AdminPage() {
           </div>
         </>
       )}
-
+  
       {showModal && (
         <div className="modal">
           <div className="modal-content">
@@ -284,7 +323,7 @@ function AdminPage() {
           </div>
         </div>
       )}
-
+  
       {message && <p className="message">{message}</p>}
     </div>
   );

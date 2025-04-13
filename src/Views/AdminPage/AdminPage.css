@@ -173,3 +173,13 @@ body {
     background-color: #333;
     color: white;
   }
+
+  .image-preview {
+    display: block;
+    margin: 10px auto;
+    max-width: 100%; /* Dopasowanie do szerokości kontenera */
+    max-height: 200px; /* Ustawienie maksymalnej wysokości */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    object-fit: contain; /* Zachowanie proporcji obrazu */
+  }

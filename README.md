@@ -1,4 +1,37 @@
-# Car-Renting-TEB
+# 🚗 Car Rental – React App
+
+A fully functional car rental application built with **React**.
+
+https://youtu.be/jBsCJ7OEu6I
+
+## 🔧 Features
+
+- 👤 User authentication (including admin access)
+- 🔍 Searchable car list with tags
+- 🧾 Invoice printing
+- 🧑‍💼 Admin panel – add/edit/delete cars
+- 📸 Image modals and car photos
+- 🛠️ Update user avatar and password
+- 🔒 Auth stored in JSON-based backend (mocked)
+- 🌟 Review slider
+- 📊 Reservation system with JSON data saving
+- 🌐 Responsive layout with navbar avatar and dropdown
+
+## 🖼️ UI
+
+Modern and fun design with modals, sliders, and a clean layout.
+
+## 📁 Technologies
+
+- React
+- React Router
+- CSS
+- JSON for mock backend
+
+---
+
+
+
  Strona do wynajmowania aut. Wykonywana na zajęciach Tworzenie Aplikacji Webowych.
 # Default View
 ![image](https://github.com/user-attachments/assets/d3a79d1d-b1ba-4118-9f90-c6909fed850f)

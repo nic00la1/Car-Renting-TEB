@@ -2,8 +2,10 @@
 
 A fully functional car rental application built with **React**.
 
+![Car-Rental-App](https://github.com/user-attachments/assets/09aba3cf-93a3-437a-bde9-ed59fb7e6e09)
 
-[![Watch the video](https://i.sstatic.net/Vp2cE.png)](https://youtu.be/jBsCJ7OEu6I)
+[![Watch the video](![Car-Rental-App](https://github.com/user-attachments/assets/e3a30722-4f6a-44d8-845e-ff973a6b949b)
+)](https://youtu.be/jBsCJ7OEu6I)
 
 
 
